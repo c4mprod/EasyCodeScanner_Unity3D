@@ -1,0 +1,44 @@
+v1.8
+- UI and camera bug fixes
+- Double scan fix when heavy process in OnScannerMessage
+
+v1.7
+- UI bug fix with orientation is set to landscape in Unity3D
+
+v1.6
+- Double scan crash fix
+- portrait and landscape support on iOS
+
+v1.5
+- EasyCodeScanner API is now in a separate C# script for better clarity
+- Easier integration : bridge GameObject is automatically created, no more prefab to include
+- [iOS] New methods to get the scanned picture : 
+	public static byte[] getScannerImage();
+	public static Texture2D getScannerImage(int texWidth, int texHeigh);
+- [iOS] New methods to decode a picture :
+	public static void decodeImage(int symbols, byte[] image);
+	public static void decodeImage(int symbols, Texture2D texture)
+	OnDecoderMessage Action callback when image is decoded
+
+v1.4
+- New callback "onScannerEvent" to indicate the opening ("EVENT_OPENED") and closing ("EVENT_CLOSED") of the plugin 
+
+v1.3
+- "GameObject" becomes "CodeScannerBridge", you need to rename the GameObject to make it work.
+- Prefab fix
+
+v1.2
+- [Android]Improved code detection
+- [Android]Optimized detection area
+- [Android]Faster camera preview
+- [Android]Better front camera preview quality
+- Action "OnScannerSucced" becomes "OnScannerSuccess"
+
+
+v1.1
+- [Android] Icon link bug fix in the Manifest
+- [Android] Now compatible with other concurrent Android plugins (static call to scanner)
+- Added event Action to be notified in other classes
+
+v1.0
+- First release
