@@ -1,6 +1,5 @@
 package com.c4mprod.ezcodescanner.views;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
@@ -35,7 +34,6 @@ public final class CameraUI extends View {
 
     }
 
-    @SuppressLint("DrawAllocation")
     @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
 

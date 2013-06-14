@@ -1,13 +1,13 @@
 package com.c4mprod.ezcodescanner.camera;
 
 import java.lang.reflect.Method;
+import java.util.List;
 
 import net.sourceforge.zbar.Config;
 import net.sourceforge.zbar.Image;
 import net.sourceforge.zbar.ImageScanner;
 import net.sourceforge.zbar.Symbol;
 import net.sourceforge.zbar.SymbolSet;
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.pm.ActivityInfo;
@@ -44,7 +44,6 @@ import com.c4mprod.ezcodescanner.RootActivity;
 import com.c4mprod.ezcodescanner.views.CameraUI;
 import com.unity3d.player.UnityPlayer;
 
-@SuppressLint({ "NewApi", "NewApi" })
 public class CameraActivity extends Activity {
 
     // Public
@@ -77,6 +76,7 @@ public class CameraActivity extends Activity {
     private ImageView           mTestImage;
     private static int          mCamFacing;
     private static float        pixelDensity      = 1;
+    private boolean             isFlashOn         = false;
 
     private final Handler       mHandler          = new Handler();
 
@@ -116,20 +116,38 @@ public class CameraActivity extends Activity {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
 
-                if (mCamera != null) {
-                    Parameters params = mCamera.getParameters();
-                    if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                        params.setFlashMode(Parameters.FLASH_MODE_TORCH);
-                    } else if (event.getAction() == MotionEvent.ACTION_UP) {
-                        params.setFlashMode(Parameters.FLASH_MODE_OFF);
+                try {
+                    if (mCamera != null) {
+                        Parameters params = mCamera.getParameters();
+                        List<String> flashModes = params.getSupportedFlashModes();
+                        // Check if camera flash exists
+                        if (flashModes == null) {
+                            return true;
+                        }
+                        String flashMode = params.getFlashMode();
+                        if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                            if (!Parameters.FLASH_MODE_TORCH.equals(flashMode)) {
+                                // Turn on the flash
+                                if (flashModes.contains(Parameters.FLASH_MODE_TORCH)) {
+                                    params.setFlashMode(Parameters.FLASH_MODE_TORCH);
+                                    mCamera.setParameters(params);
+                                    isFlashOn = true;
+                                }
+                            }
+                        } else if (event.getAction() == MotionEvent.ACTION_UP) {
+                            // if (flashMode.equals(Camera.Parameters.FLASH_MODE_TORCH)) {
+                            params.setFlashMode(Parameters.FLASH_MODE_OFF);
+                            mCamera.setParameters(params);
+                            isFlashOn = false;
+                            // }
+                        }
+
                     }
-                    try {
-                        mCamera.setParameters(params);
-                    } catch (Exception e) {
-                        // In case not supported
-                    }
+                } catch (Exception e) {
+                    // In case not supported
+                    e.printStackTrace();
                 }
-                return false;
+                return true;
             }
         });
 
